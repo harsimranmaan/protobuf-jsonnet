@@ -87,7 +87,12 @@ func (s *suiteRunner) run() {
 		require.NoError(s.t, err)
 		s.config.ProtoFiles = files
 	}
-	var includePaths []string
+	// Always include the testdata's parent path so that protoc files can be looked up
+	// Verbatim from protoc's error message:
+	// Note that the proto_path must be an exact prefix of the .proto file names --
+	// protoc is too dumb to figure out when two paths (e.g. absolute and relative)
+	// are equivalent (it's harder than you think).
+	var includePaths = []string{"testdata/.."}
 	if s.config.IncludeValidate {
 		includePaths = append(includePaths, ".", "..")
 	}
